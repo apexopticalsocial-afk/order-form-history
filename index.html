@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apex Optical - Premium Lab Order Form</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        @media print {
+            body { background: white !important; color: black !important; }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen py-8 px-4 sm:px-6 lg:px-8 selection:bg-cyan-500 selection:text-slate-950">
+
+    <!-- Top Branding Header -->
+    <header class="max-w-7xl mx-auto mb-8 border-b border-slate-800 pb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+            <div class="flex items-center gap-3">
+                <div class="bg-cyan-500 text-slate-950 font-black px-3 py-1.5 rounded-lg tracking-wider text-sm shadow-lg shadow-cyan-500/20">AO</div>
+                <div>
+                    <h1 class="text-xl font-extrabold tracking-tight text-white">APEX OPTICAL <span class="text-xs font-normal text-slate-400">PTY LTD</span></h1>
+                    <p class="text-xs text-cyan-400 font-medium tracking-widest uppercase">See the Future — Est. Cape Town</p>
+                </div>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <div class="flex bg-slate-900 border border-slate-800 p-1 rounded-xl">
+                <button type="button" id="tabOrderBtn" onclick="switchTab('order')" class="px-4 py-2 text-xs font-semibold rounded-lg bg-cyan-600 text-white transition shadow">New Order</button>
+                <button type="button" id="tabHistoryBtn" onclick="switchTab('history')" class="px-4 py-2 text-xs font-semibold rounded-lg text-slate-300 hover:text-white transition">Order History (<span id="historyCount">0</span>)</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto">
+        
+        <!-- SECTION 1: NEW ORDER FORM & LIVE PREVIEW -->
+        <div id="sectionOrder" class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- FORM SECTION (Left / 7 Cols) -->
+            <div class="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="mb-6 pb-4 border-b border-slate-800 flex justify-between items-center">
+                    <div>
+                        <span class="text-cyan-400 font-semibold tracking-widest text-xs uppercase bg-cyan-950/80 px-2.5 py-1 rounded-md border border-cyan-800/60">Lab Order Portal</span>
+                        <h2 class="text-lg font-bold text-white mt-1">Order Submission Form</h2>
+                    </div>
+                    <span class="text-xs text-slate-400">Required fields marked with *</span>
+                </div>
+
+                <form id="orderForm" class="space-y-8">
+                    
+                    <!-- 01. Order Details -->
+                    <div class="space-y-4">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-cyan-400 flex items-center gap-2 border-b border-slate-800 pb-2">
+                            <span class="bg-cyan-950 text-cyan-300 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold border border-cyan-800">1</span> Order Details
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1">Date *</label>
+                                <input type="date" id="orderDate" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition" required>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1">From (Practice / Client) *</label>
+                                <input type="text" id="clientName" placeholder="Practice Name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition" required>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1">PPN</label>
+                                <input type="text" id="ppn" placeholder="PPN Number" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1">Patient Name *</label>
+                                <input type="text" id="patientName" placeholder="Full Name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition" required>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1">Order Ref</label>
+                                <input type="text" id="orderRef" placeholder="Ref code" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1">OB No</label>
+                                <input type="text" id="obNo" placeholder="OB Number" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 02. Prescription -->
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-cyan-400 flex items-center gap-2">
+                                <span class="bg-cyan-950 text-cyan-300 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold border border-cyan-800">2</span> Prescription Specs
+                            </h3>
+                            <span class="text-[11px] text-slate-400">Accepts: -8.00 to +6.00 | Axis 0-180°</span>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs">
+                                <thead>
+                                    <tr class="text-slate-400 border-b border-slate-800/80">
+                                        <th class="py-2 px-2 font-semibold">Eye</th>
+                                        <th class="py-2 px-2 font-semibold">SPH</th>
+                                        <th class="py-2 px-2 font-semibold">CYL</th>
+                                        <th class="py-2 px-2 font-semibold">AXIS</th>
+                                        <th class="py-2 px-2 font-semibold">ADD</th>
+                                        <th class="py-2 px-2 font-semibold">PRISM</th>
+                                        <th class="py-2 px-2 font-semibold">BASE</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-800/40">
+                                    <tr>
+                                        <td class="py-3 px-2 font-bold text-cyan-400">R (Right)</td>
+                                        <td class="py-2 px-1"><input type="text" id="rSph" placeholder="0.00" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-2 text-center text-white text-xs focus:border-cyan-500"></td>
+                                        <td class="py-2 px-1"><input type="text" id="rCyl" placeholder="0.00" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-2 text-center text-white text-xs focus:border-cyan-500"></td>
+                                        <td class="py-2 px-1"><input type="text" id="rAxis" placeholder="°" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-2 text-center text-white text-xs focus:border-cyan-500"></td>
+                                        <td class="py-2 px-1"><input type="text" id="rAdd" placeholder="+0.00" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-2 text-center text-white text-xs focus:border-cyan-500"></td>
+                                        <td class="py-2 px-1"><input type="text" id="rPrism" placeholder="0.0" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-2 text-center text-white text-xs focus:border-cyan-500"></td>
+                                        <td class="py-2 px-1"><input type="text" id="rBase" placeholder="Base" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-2 text-center text-white text-xs focus:border-cyan-500"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 px-2 font-bold text-cyan-400">L (Left)</td>
+                                        <td class="py-2 px-1"><input type="text" id="lSph" placeholder="0.00" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-2 text-center text-white text-xs focus:border-cyan-500"></td>
+                                        <td class="py-2 px-1"><input type="text" id="lCyl" placeholder="0.00" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-2 text-center text-white text-xs focus:border-cyan-500"></td>
+                                        <td class="py-2 px-1"><input type="text" id="lAxis" placeholder="°" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-2 text-center text-white text-xs focus:border-cyan-500"></td>
+                                        <td class="py-2 px-1"><input type="text" id="lAdd" placeholder="+0.00" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-2 text-center text-white text-xs focus:border-cyan-500"></td>
+                                        <td class="py-2 px-1"><input type="text" id="lPrism" placeholder="0.0" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-2 text-center text-white text-xs focus:border-cyan-500"></td>
+                                        <td class="py-2 px-1"><input type="text" id="lBase" placeholder="Base" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-2 text-center text-white text-xs focus:border-cyan-500"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 03. Lens & Frame Details -->
+                    <div class="space-y-4">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-cyan-400 flex items-center gap-2 border-b border-slate-800 pb-2">
+                            <span class="bg-cyan-950 text-cyan-300 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold border border-cyan-800">3</span> Lens & Frame Details
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1">Lens Type</label>
+                                <select id="lensType" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition">
+                                    <option value="Single Vision">Single Vision</option>
+                                    <option value="Bifocal">Bifocal</option>
+                                    <option value="Progressive">Progressive</option>
+                                    <option value="Office / Indoor">Office / Indoor</option>
+                                    <option value="Myopia Control">Myopia Control</option>
+                                    <option value="Photochromic">Photochromic</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1">Material</label>
+                                <select id="lensMaterial" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition">
+                                    <option value="Plastic">Plastic</option>
+                                    <option value="Glass">Glass</option>
+                                    <option value="Polycarbonate">Polycarbonate</option>
+                                    <option value="Hi-Index">Hi-Index</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1">Frame Model</label>
+                                <input type="text" id="frameModel" placeholder="Frame model name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1">Frame Type</label>
+                                <select id="frameType" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition">
+                                    <option value="Full Frame">Full Frame</option>
+                                    <option value="Nylon">Nylon</option>
+                                    <option value="Rimless">Rimless</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1">Package</label>
+                                <select id="packageOpt" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition">
+                                    <option value="No">No</option>
+                                    <option value="Yes">Yes</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1">Lens Diameter (mm)</label>
+                                <input type="text" id="lensDiameter" placeholder="e.g. 70" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition">
+                            </div>
+                        </div>
+
+                        <!-- PDs and Sight Heights -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                            <div>
+                                <label class="block text-[11px] text-slate-400 mb-1">Dist PD R (mm)</label>
+                                <input type="text" id="distPdR" placeholder="mm" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-2 text-xs text-white">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] text-slate-400 mb-1">Dist PD L (mm)</label>
+                                <input type="text" id="distPdL" placeholder="mm" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-2 text-xs text-white">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] text-slate-400 mb-1">Near PD R (mm)</label>
+                                <input type="text" id="nearPdR" placeholder="mm" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-2 text-xs text-white">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] text-slate-400 mb-1">Near PD L (mm)</label>
+                                <input type="text" id="nearPdL" placeholder="mm" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-2 text-xs text-white">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] text-slate-400 mb-1">Sight Height R (mm)</label>
+                                <input type="text" id="sightHtR" placeholder="mm" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-2 text-xs text-white">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] text-slate-400 mb-1">Sight Height L (mm)</label>
+                                <input type="text" id="sightHtL" placeholder="mm" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-2 text-xs text-white">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 04. Coating / Tint -->
+                    <div class="space-y-4">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-cyan-400 flex items-center gap-2 border-b border-slate-800 pb-2">
+                            <span class="bg-cyan-950 text-cyan-300 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold border border-cyan-800">4</span> Coating / Tint Options
+                        </h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+                            <label class="flex items-center gap-2.5 bg-slate-950 p-3 rounded-xl border border-slate-800 cursor-pointer hover:border-cyan-500 transition">
+                                <input type="checkbox" id="solidTint" class="w-4 h-4 rounded bg-slate-900 border-slate-700 text-cyan-500 focus:ring-0">
+                                <span class="font-medium">Solid Tint</span>
+                            </label>
+                            <label class="flex items-center gap-2.5 bg-slate-950 p-3 rounded-xl border border-slate-800 cursor-pointer hover:border-cyan-500 transition">
+                                <input type="checkbox" id="gradientTint" class="w-4 h-4 rounded bg-slate-900 border-slate-700 text-cyan-500 focus:ring-0">
+                                <span class="font-medium">Gradient Tint</span>
+                            </label>
+                            <label class="flex items-center gap-2.5 bg-slate-950 p-3 rounded-xl border border-slate-800 cursor-pointer hover:border-cyan-500 transition">
+                                <input type="checkbox" id="mirrorCoat" class="w-4 h-4 rounded bg-slate-900 border-slate-700 text-cyan-500 focus:ring-0">
+                                <span class="font-medium">Mirror Coat</span>
+                            </label>
+                            <label class="flex items-center gap-2.5 bg-slate-950 p-3 rounded-xl border border-slate-800 cursor-pointer hover:border-cyan-500 transition">
+                                <input type="checkbox" id="blueCut" class="w-4 h-4 rounded bg-slate-900 border-slate-700 text-cyan-500 focus:ring-0">
+                                <span class="font-medium">Blue Cut</span>
+                            </label>
+                            <label class="flex items-center gap-2.5 bg-slate-950 p-3 rounded-xl border border-slate-800 cursor-pointer hover:border-cyan-500 transition">
+                                <input type="checkbox" id="hardCoat" class="w-4 h-4 rounded bg-slate-900 border-slate-700 text-cyan-500 focus:ring-0">
+                                <span class="font-medium">Hard Coat</span>
+                            </label>
+                            <label class="flex items-center gap-2.5 bg-slate-950 p-3 rounded-xl border border-slate-800 cursor-pointer hover:border-cyan-500 transition">
+                                <input type="checkbox" id="superArc" class="w-4 h-4 rounded bg-slate-900 border-slate-700 text-cyan-500 focus:ring-0">
+                                <span class="font-medium">Super ARC</span>
+                            </label>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1">Super ARC Details / Other Notes</label>
+                            <input type="text" id="arcDetails" placeholder="Specific coating instructions..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition">
+                        </div>
+                    </div>
+
+                    <!-- 05. Box Measurements -->
+                    <div class="space-y-4">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-cyan-400 flex items-center gap-2 border-b border-slate-800 pb-2">
+                            <span class="bg-cyan-950 text-cyan-300 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold border border-cyan-800">5</span> Box Measurements (mm)
+                        </h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <div>
+                                <label class="block text-[11px] text-slate-400 mb-1">A-Box ↔</label>
+                                <input type="text" id="aBox" placeholder="mm" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-2 text-xs text-white">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] text-slate-400 mb-1">B-Box ↕</label>
+                                <input type="text" id="bBox" placeholder="mm" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-2 text-xs text-white">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] text-slate-400 mb-1">ED ⤢</label>
+                                <input type="text" id="edBox" placeholder="mm" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-2 text-xs text-white">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] text-slate-400 mb-1">DBL</label>
+                                <input type="text" id="dblBox" placeholder="mm" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-2 text-xs text-white">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 06. Special Instructions -->
+                    <div class="space-y-4">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-cyan-400 flex items-center gap-2 border-b border-slate-800 pb-2">
+                            <span class="bg-cyan-950 text-cyan-300 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold border border-cyan-800">6</span> Special Instructions
+                        </h3>
+                        <div>
+                            <textarea id="specialInstructions" rows="3" placeholder="Enter any special lab notes..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition"></textarea>
+                            <p class="text-[11px] text-slate-500 mt-1">Prescription photo note: Attach prescription image directly in WhatsApp chat after sending order.</p>
+                        </div>
+                    </div>
+
+                    <!-- Form Controls -->
+                    <div class="pt-4 border-t border-slate-800 flex items-center justify-between">
+                        <button type="button" id="clearBtn" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl transition border border-slate-700">Clear Form</button>
+                        <span class="text-xs text-slate-500">Auto-saves to Order History on WhatsApp send</span>
+                    </div>
+                </form>
+            </div>
+
+            <!-- PREVIEW & ACTIONS SECTION (Right / 5 Cols) -->
+            <div class="lg:col-span-5 space-y-6">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl sticky top-8">
+                    
+                    <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-4">
+                        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            Live WhatsApp Preview
+                        </h3>
+                        <span class="flex h-2.5 w-2.5 relative">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                        </span>
+                    </div>
+
+                    <!-- WhatsApp Preview Box -->
+                    <div class="bg-slate-950 border border-slate-800/80 rounded-xl p-4 font-mono text-xs text-slate-300 whitespace-pre-wrap leading-relaxed max-h-[400px] overflow-y-auto mb-6 shadow-inner select-all" id="whatsappPreview">
+                        *APEX OPTICAL - NEW ORDER*
+                        ━━━━━━━━━━━━━━━━━━━━
+                        📋 *ORDER DETAILS*
+                        Date: 2026-11-18
+
+                        👁️ *PRESCRIPTION*
+                        R: -
+                        L: -
+
+                        🔬 *LENS & FRAME*
+                        Material: Plastic
+                        Frame Type: Full Frame
+
+                        🎨 *COATING / TINT*
+                        Hard Coat: Yes
+                        Super ARC: Yes
+
+                        📐 *BOX MEASUREMENTS (mm)*
+
+                        ━━━━━━━━━━━━━━━━━━━━
+                        _Sent via Apex Optical Online Order_
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="space-y-3">
+                        <a id="whatsappSendBtn" href="#" target="_blank" onclick="recordOrderAndSend()" class="w-full flex items-center justify-center gap-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg shadow-emerald-900/30 transition text-sm">
+                            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.124-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                        Send via WhatsApp & Save to History
+                    </a>
+                    
+                    <button type="button" id="copyBtn" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold py-3 px-4 rounded-xl transition text-xs flex items-center justify-center gap-2 border border-slate-700">
+                        <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                        Copy Message
+                    </button>
+                    
+                    <button type="button" onclick="window.print()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold py-3 px-4 rounded-xl transition text-xs flex items-center justify-center gap-2 border border-slate-700">
+                        <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                        Print / Save PDF
+                    </button>
+                </div>
+
+                <div class="mt-6 border-t border-slate-800 pt-4 text-xs text-slate-400 space-y-1.5">
+                    <p class="font-semibold text-slate-300">How it works:</p>
+                    <p>• Submitting via WhatsApp automatically saves order to browser history.</p>
+                    <p>• Access past submissions anytime via the Order History tab above.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: ORDER HISTORY TAB -->
+        <div id="sectionHistory" class="hidden space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-800 pb-6 mb-6">
+                    <div>
+                        <span class="text-cyan-400 font-semibold tracking-widest text-xs uppercase bg-cyan-950/80 px-2.5 py-1 rounded-md border border-cyan-800/60">Local Database</span>
+                        <h2 class="text-xl font-bold text-white mt-1">Submitted Order History</h2>
+                        <p class="text-xs text-slate-400 mt-0.5">Orders saved securely in your browser's local storage.</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button type="button" onclick="clearAllHistory()" class="px-4 py-2 bg-rose-950/60 hover:bg-rose-900 text-rose-300 border border-rose-800/60 rounded-xl text-xs font-semibold transition">Clear History</button>
+                    </div>
+                </div>
+
+                <div id="historyContainer" class="space-y-4">
+                    <!-- Dynamic history cards will be inserted here -->
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer Lab Details -->
+    <footer class="max-w-7xl mx-auto mt-12 pt-6 border-t border-slate-800 text-center text-xs text-slate-500 space-y-1">
+        <p>Apex Optical Pty Ltd — Unit 027 Millennium Park, Stellenberg Road, Parow Industria, 7500, Cape Town</p>
+        <p>Tel: 021 931 0430 | WhatsApp: 079 619 8570</p>
+    </footer>
+
+    <script>
+        // Set today's date as default
+        document.getElementById('orderDate').valueAsDate = new Date();
+
+        const formFieldIds = [
+            'orderDate', 'clientName', 'ppn', 'patientName', 'orderRef', 'obNo',
+            'rSph', 'rCyl', 'rAxis', 'rAdd', 'rPrism', 'rBase',
+            'lSph', 'lCyl', 'lAxis', 'lAdd', 'lPrism', 'lBase',
+            'lensType', 'lensMaterial', 'frameModel', 'frameType', 'packageOpt', 'lensDiameter',
+            'distPdR', 'distPdL', 'nearPdR', 'nearPdL', 'sightHtR', 'sightHtL',
+            'solidTint', 'gradientTint', 'mirrorCoat', 'blueCut', 'hardCoat', 'superArc', 'arcDetails',
+            'aBox', 'bBox', 'edBox', 'dblBox', 'specialInstructions'
+        ];
+
+        function switchTab(tab) {
+            const orderSec = document.getElementById('sectionOrder');
+            const historySec = document.getElementById('sectionHistory');
+            const tabOrderBtn = document.getElementById('tabOrderBtn');
+            const tabHistoryBtn = document.getElementById('tabHistoryBtn');
+
+            if (tab === 'order') {
+                orderSec.classList.remove('hidden');
+                historySec.classList.add('hidden');
+                tabOrderBtn.className = "px-4 py-2 text-xs font-semibold rounded-lg bg-cyan-600 text-white transition shadow";
+                tabHistoryBtn.className = "px-4 py-2 text-xs font-semibold rounded-lg text-slate-300 hover:text-white transition";
+            } else {
+                orderSec.classList.add('hidden');
+                historySec.classList.remove('hidden');
+                tabHistoryBtn.className = "px-4 py-2 text-xs font-semibold rounded-lg bg-cyan-600 text-white transition shadow";
+                tabOrderBtn.className = "px-4 py-2 text-xs font-semibold rounded-lg text-slate-300 hover:text-white transition";
+                renderOrderHistory();
+            }
+        }
+
+        function buildWhatsAppMessage() {
+            const getVal = (id) => document.getElementById(id).value.trim();
+            const getCheck = (id) => document.getElementById(id).checked;
+
+            const date = getVal('orderDate');
+            const client = getVal('clientName');
+            const ppn = getVal('ppn');
+            const patient = getVal('patientName');
+            const ref = getVal('orderRef');
+            const ob = getVal('obNo');
+
+            const rSph = getVal('rSph') || '-';
+            const rCyl = getVal('rCyl') || '-';
+            const rAxis = getVal('rAxis') || '-';
+            const rAdd = getVal('rAdd') || '-';
+            const rPrism = getVal('rPrism') || '-';
+            const rBase = getVal('rBase') || '-';
+
+            const lSph = getVal('lSph') || '-';
+            const lCyl = getVal('lCyl') || '-';
+            const lAxis = getVal('lAxis') || '-';
+            const lAdd = getVal('lAdd') || '-';
+            const lPrism = getVal('lPrism') || '-';
+            const lBase = getVal('lBase') || '-';
+
+            const lensType = getVal('lensType');
+            const material = getVal('lensMaterial');
+            const frameModel = getVal('frameModel');
+            const frameType = getVal('frameType');
+            const packageOpt = getVal('packageOpt');
+            const diameter = getVal('lensDiameter');
+
+            const distPdR = getVal('distPdR');
+            const distPdL = getVal('distPdL');
+            const nearPdR = getVal('nearPdR');
+            const nearPdL = getVal('nearPdL');
+            const sightHtR = getVal('sightHtR');
+            const sightHtL = getVal('sightHtL');
+
+            // Coatings
+            let coatings = [];
+            if (getCheck('solidTint')) coatings.push('Solid Tint');
+            if (getCheck('gradientTint')) coatings.push('Gradient Tint');
+            if (getCheck('mirrorCoat')) coatings.push('Mirror Coat');
+            if (getCheck('blueCut')) coatings.push('Blue Cut');
+            if (getCheck('hardCoat')) coatings.push('Hard Coat');
+            if (getCheck('superArc')) coatings.push('Super ARC');
+            const arcDetails = getVal('arcDetails');
+            if (arcDetails) coatings.push(`ARC Notes: ${arcDetails}`);
+
+            // Box measurements
+            const aBox = getVal('aBox');
+            const bBox = getVal('bBox');
+            const edBox = getVal('edBox');
+            const dblBox = getVal('dblBox');
+
+            const specialInst = getVal('specialInstructions');
+
+            let text = `*APEX OPTICAL - NEW ORDER*\n`;
+            text += `━━━━━━━━━━━━━━━━━━━━\n`;
+            text += `📋 *ORDER DETAILS*\n`;
+            if (date) text += `Date: ${date}\n`;
+            if (client) text += `Practice/Client: ${client}\n`;
+            if (ppn) text += `PPN: ${ppn}\n`;
+            if (patient) text += `Patient: ${patient}\n`;
+            if (ref) text += `Order Ref: ${ref}\n`;
+            if (ob) text += `OB No: ${ob}\n`;
+
+            text += `\n👁️ *PRESCRIPTION*\n`;
+            text += `R: SPH ${rSph} | CYL ${rCyl} | AX ${rAxis} | ADD ${rAdd} | PRISM ${rPrism} ${rBase}\n`;
+            text += `L: SPH ${lSph} | CYL ${lCyl} | AX ${lAxis} | ADD ${lAdd} | PRISM ${lPrism} ${lBase}\n`;
+
+            text += `\n🔬 *LENS & FRAME*\n`;
+            text += `Type: ${lensType}\n`;
+            text += `Material: ${material}\n`;
+            if (frameModel) text += `Frame Model: ${frameModel}\n`;
+            text += `Frame Type: ${frameType}\n`;
+            if (packageOpt === 'Yes') text += `Package: Yes\n`;
+            if (diameter) text += `Diameter: ${diameter}mm\n`;
+
+            if (distPdR || distPdL || nearPdR || nearPdL || sightHtR || sightHtL) {
+                text += `\n📏 *MEASUREMENTS*\n`;
+                if (distPdR || distPdL) text += `Dist PD: R ${distPdR || '-'} / L ${distPdL || '-'} mm\n`;
+                if (nearPdR || nearPdL) text += `Near PD: R ${nearPdR || '-'} / L ${nearPdL || '-'} mm\n`;
+                if (sightHtR || sightHtL) text += `Sight Ht: R ${sightHtR || '-'} / L ${sightHtL || '-'} mm\n`;
+            }
+
+            if (coatings.length > 0) {
+                text += `\n🎨 *COATING / TINT*\n`;
+                text += coatings.join(', ') + `\n`;
+            }
+
+            if (aBox || bBox || edBox || dblBox) {
+                text += `\n📐 *BOX MEASUREMENTS (mm)*\n`;
+                if (aBox) text += `A-Box: ${aBox} `;
+                if (bBox) text += `B-Box: ${bBox} `;
+                if (edBox) text += `ED: ${edBox} `;
+                if (dblBox) text += `DBL: ${dblBox}`;
+                text += `\n`;
+            }
+
+            if (specialInst) {
+                text += `\n⚠️ *SPECIAL INSTRUCTIONS*\n${specialInst}\n`;
+            }
+
+            text += `\n━━━━━━━━━━━━━━━━━━━━\n`;
+            text += `_Sent via Apex Optical Online Order_`;
+
+            return text;
+        }
+
+        function updateLivePreview() {
+            const message = buildWhatsAppMessage();
+            document.getElementById('whatsappPreview').innerText = message;
+
+            const encoded = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/27796198570?text=${encoded}`;
+            document.getElementById('whatsappSendBtn').href = whatsappUrl;
+        }
+
+        // Local Storage Order History Management
+        function getSavedOrders() {
+            try {
+                const stored = localStorage.getItem('apex_order_history');
+                return stored ? JSON.parse(stored) : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveOrderToHistory() {
+            const patient = document.getElementById('patientName').value.trim() || 'Unknown Patient';
+            const client = document.getElementById('clientName').value.trim() || 'Unknown Practice';
+            const date = document.getElementById('orderDate').value || new Date().toISOString().split('T')[0];
+            const message = buildWhatsAppMessage();
+
+            const newOrder = {
+                id: 'ORD-' + Date.now().toString().slice(-6),
+                date: date,
+                patient: patient,
+                client: client,
+                message: message,
+                timestamp: new Date().toLocaleString()
+            };
+
+            const orders = getSavedOrders();
+            orders.unshift(newOrder); // Add to top
+            localStorage.setItem('apex_order_history', JSON.stringify(orders));
+            updateHistoryBadge();
+        }
+
+        function updateHistoryBadge() {
+            const orders = getSavedOrders();
+            document.getElementById('historyCount').innerText = orders.length;
+        }
+
+        function recordOrderAndSend() {
+            saveOrderToHistory();
+        }
+
+        function renderOrderHistory() {
+            const container = document.getElementById('historyContainer');
+            const orders = getSavedOrders();
+
+            if (orders.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 bg-slate-950/40 rounded-xl border border-slate-800">
+                        <svg class="w-12 h-12 text-slate-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                        <p class="text-slate-400 font-medium text-sm">No saved orders found in local storage.</p>
+                        <p class="text-slate-500 text-xs mt-1">Orders are recorded here automatically when sent via WhatsApp.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            orders.forEach((ord, index) => {
+                html += `
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 space-y-4 hover:border-slate-700 transition">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-slate-800/80 pb-3">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs font-bold text-cyan-400 bg-cyan-950 px-2.5 py-1 rounded border border-cyan-800">${ord.id}</span>
+                                    <h3 class="text-sm font-bold text-white">Patient: ${ord.patient}</h3>
+                                </div>
+                                <p class="text-xs text-slate-400 mt-1">Practice: <span class="text-slate-300">${ord.client}</span> | Date: ${ord.date} <span class="text-slate-500">(Saved: ${ord.timestamp})</span></p>
+                            </div>
+                            <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                                <button onclick="copyHistoryOrder('${ord.id}')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-semibold transition border border-slate-700">Copy Text</button>
+                                <a href="https://wa.me/27796198570?text=${encodeURIComponent(ord.message)}" target="_blank" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold transition">Resend WhatsApp</a>
+                                <button onclick="deleteSingleOrder(${index})" class="p-1.5 bg-rose-950/40 hover:bg-rose-900 text-rose-400 rounded-lg transition border border-rose-900/40" title="Delete Order">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="bg-slate-900/60 p-3 rounded-lg font-mono text-xs text-slate-300 whitespace-pre-wrap max-h-40 overflow-y-auto border border-slate-800/60">${ord.message}</div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function copyHistoryOrder(id) {
+            const orders = getSavedOrders();
+            const found = orders.find(o => o.id === id);
+            if (found) {
+                const textArea = document.createElement('textarea');
+                textArea.value = found.message;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    alertModal('Order ' + id + ' copied to clipboard!');
+                } catch (err) {
+                    console.error('Failed to copy', err);
+                }
+                document.body.removeChild(textArea);
+            }
+        }
+
+        function deleteSingleOrder(index) {
+            const orders = getSavedOrders();
+            orders.splice(index, 1);
+            localStorage.setItem('apex_order_history', JSON.stringify(orders));
+            updateHistoryBadge();
+            renderOrderHistory();
+        }
+
+        function clearAllHistory() {
+            if (confirm('Are you sure you want to clear all order history?')) {
+                localStorage.removeItem('apex_order_history');
+                updateHistoryBadge();
+                renderOrderHistory();
+            }
+        }
+
+        function alertModal(msg) {
+            // Simple non-blocking inline notification badge
+            const banner = document.createElement('div');
+            banner.className = 'fixed bottom-5 right-5 bg-cyan-600 text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-2xl z-50 transition animate-bounce';
+            banner.innerText = msg;
+            document.body.appendChild(banner);
+            setTimeout(() => {
+                banner.remove();
+            }, 2500);
+        }
+
+        // Attach event listeners for real-time reactivity
+        formFieldIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('input', updateLivePreview);
+                el.addEventListener('change', updateLivePreview);
+            }
+        });
+
+        // Clear Form handler
+        document.getElementById('clearBtn').addEventListener('click', () => {
+            document.getElementById('orderForm').reset();
+            document.getElementById('orderDate').valueAsDate = new Date();
+            updateLivePreview();
+        });
+
+        // Copy message handler
+        document.getElementById('copyBtn').addEventListener('click', () => {
+            const textToCopy = document.getElementById('whatsappPreview').innerText;
+            const copyBtn = document.getElementById('copyBtn');
+            const originalHTML = copyBtn.innerHTML;
+
+            const textArea = document.createElement('textarea');
+            textArea.value = textToCopy;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                copyBtn.innerHTML = `<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Copied to Clipboard!`;
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalHTML;
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy text', err);
+            }
+            document.body.removeChild(textArea);
+        });
+
+        // Initial setup
+        updateLivePreview();
+        updateHistoryBadge();
+    </script>
+</body>
+</html>
